@@ -1,0 +1,22 @@
+{
+  "name": "ar-note-app-database",
+  "version": "1.0.0",
+  "description": "An app for creating notes in augmented reality.",
+  "main": "server.js",
+  "author": "Akhere Ihoeghinlan",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "mongodb": "^4.2.0",
+    "mongoose": "^6.0.13",
+    "yup": "^0.32.11"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
