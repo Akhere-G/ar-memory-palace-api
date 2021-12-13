@@ -1,18 +1,19 @@
-const Note = require("../models/Note");
+const Note = require("../models/note");
 const yup = require("yup");
 
 const NoteSchema = new yup.ObjectSchema({
   title: yup.string().trim().max(30).required("title is missing"),
+  groupId: yup.string().trim().max(30).required("group id is missing"),
   category: yup.string().trim().max(30).required("category is missing"),
   text: yup.string().trim().max(250).required("text is missing"),
-  owner: yup.string().trim().required("owner is missing"),
-  latitude: yup.string().trim().required("latitdude is missing"),
-  longitude: yup.string().trim().required("longitude is missing"),
+  latitude: yup.number().required("latitdude is missing"),
+  longitude: yup.number().required("longitude is missing"),
 });
 
 module.exports.getNotes = async (req, res) => {
+  const groupId = req.groupId;
   try {
-    const notes = await Note.find().sort({ date: -1 });
+    const notes = await Note.find({ groupId });
     res.status(200).json({ notes, total: notes.length });
   } catch (err) {
     res.status(404).json({ message: err.message });
@@ -21,12 +22,12 @@ module.exports.getNotes = async (req, res) => {
 
 module.exports.createNote = async (req, res) => {
   try {
-    const { title, category, text, owner, longitude, latitude } = req.body;
+    const { title, groupId, category, text, longitude, latitude } = req.body;
     const data = {
-      title,
-      category,
-      text,
-      owner,
+      title: title.trime(),
+      groupId,
+      category: category?.trim(),
+      text: text?.trim(),
       longitude,
       latitude,
     };
@@ -45,18 +46,17 @@ module.exports.createNote = async (req, res) => {
 
 module.exports.updateNote = async (req, res) => {
   try {
-    const { title, category, text, owner, longitude, latitude } = req.body;
-
-    const { id } = req.params;
-
+    const { title, groupId, category, text, longitude, latitude } = req.body;
     const data = {
-      title,
-      category,
-      text,
-      owner,
+      title: title?.trim(),
+      groupId,
+      category: category?.trim(),
+      text: text?.trim(),
       longitude,
       latitude,
     };
+
+    const { id } = req.params;
 
     await NoteSchema.validate(data);
 
@@ -66,7 +66,7 @@ module.exports.updateNote = async (req, res) => {
       return res.status(404).json({ message: `No note with id ${id}` });
     }
 
-    res.status(201).json({ note: { ...data, _id: id } });
+    res.status(201).json({ note: { ...data, id } });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }

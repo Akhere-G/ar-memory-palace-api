@@ -1,4 +1,4 @@
-const Group = require("../models/Group");
+const Group = require("../models/group");
 const yup = require("yup");
 
 const GroupSchema = new yup.ObjectSchema({
