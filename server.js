@@ -2,6 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 
+const noteRoutes = require("./routes/notes");
+
 dotenv.config();
 
 const app = express();
@@ -11,6 +13,8 @@ app.use(express.urlencoded({ extended: true }));
 const CONNECTION_URL = process.env.CONNECTION_URL;
 
 const PORT = process.env.PORT || 5000;
+
+app.use("/api/notes", noteRoutes);
 
 app.use("/", (req, res) => res.send("Welcone to the memory palace api!"));
 
