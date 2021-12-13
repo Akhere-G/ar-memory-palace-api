@@ -3,7 +3,7 @@ const yup = require("yup");
 
 const GroupSchema = new yup.ObjectSchema({
   name: yup.string().trim().max(30).required("name is missing"),
-  category: yup.string().tr.max(30).required("category is missing"),
+  category: yup.string().trim().max(30).required("category is missing"),
   summary: yup.string().trim().max(300).required("summary is missing"),
   latitude: yup.number().required("latitdude is missing"),
   longitude: yup.number().required("longitude is missing"),
@@ -61,6 +61,12 @@ module.exports.updateGroup = async (req, res) => {
     const { id } = req.params;
 
     await GroupSchema.validate(data);
+
+    const exisitingGroup = await Group.findOne({ name: data.name });
+
+    if (exisitingGroup && exisitingGroup._id != id) {
+      return res.status(400).json({ message: "This name has been taken" });
+    }
 
     const group = await Group.findByIdAndUpdate(id, data);
 
