@@ -1,4 +1,5 @@
 const Note = require("../models/note");
+const Group = require("../models/group");
 const yup = require("yup");
 
 const NoteSchema = new yup.ObjectSchema({
@@ -11,7 +12,8 @@ const NoteSchema = new yup.ObjectSchema({
 });
 
 module.exports.getNotes = async (req, res) => {
-  const groupId = req.groupId;
+  const groupId = req.headers.groupid;
+  console.log("l", groupId, req.headers);
   try {
     const notes = await Note.find({ groupId });
     res.status(200).json({ notes, total: notes.length });
@@ -24,7 +26,7 @@ module.exports.createNote = async (req, res) => {
   try {
     const { title, groupId, category, text, longitude, latitude } = req.body;
     const data = {
-      title: title.trime(),
+      title: title?.trim(),
       groupId,
       category: category?.trim(),
       text: text?.trim(),
@@ -33,6 +35,12 @@ module.exports.createNote = async (req, res) => {
     };
 
     await NoteSchema.validate(data);
+
+    const group = await Group.findById(groupId);
+
+    if (!group) {
+      return res.status(404).json({ message: `No group with id ${id}` });
+    }
 
     const newNote = new Note(data);
 
@@ -59,6 +67,8 @@ module.exports.updateNote = async (req, res) => {
     const { id } = req.params;
 
     await NoteSchema.validate(data);
+
+    delete data.groupId;
 
     const note = await Note.findByIdAndUpdate(id, data);
 
