@@ -40,7 +40,9 @@ module.exports.authorise = async (req, res, next) => {
 
     const bearer = bearerHeader.split(" ");
     const bearerToken = bearer[1];
-    req.token = bearerToken;
+    const tokenData = jwt.verify(bearerToken, process.env.SECRET_KEY);
+    const id = tokenData.id;
+    req.groupId = id;
 
     next();
   } catch (err) {
@@ -147,11 +149,7 @@ module.exports.updateGroup = async (req, res) => {
       longitude,
     };
 
-    const { token } = req;
-
-    const tokenData = jwt.verify(token, process.env.SECRET_KEY);
-
-    const id = tokenData.id;
+    const id = req.groupId;
 
     await UpdateGroupSchema.validate(data);
 
@@ -175,10 +173,7 @@ module.exports.updateGroup = async (req, res) => {
 
 module.exports.deleteGroup = async (req, res) => {
   try {
-    const { token } = req;
-    const tokenData = jwt.verify(token, process.env.SECRET_KEY);
-
-    const id = tokenData.id;
+    const id = req.groupId;
 
     const group = await Group.findByIdAndDelete(id);
 
