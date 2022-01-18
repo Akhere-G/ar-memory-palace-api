@@ -44,6 +44,12 @@ module.exports.authorise = async (req, res, next) => {
     const id = tokenData.id;
     req.groupId = id;
 
+    const group = await Group.findById(id);
+
+    if (!group) {
+      return res.status(404).json({ message: `No group with id ${id}` });
+    }
+
     next();
   } catch (err) {
     return res

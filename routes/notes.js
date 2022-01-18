@@ -7,7 +7,11 @@ const {
   deleteNote,
 } = require("../controllers/note");
 
+const { authorise } = require("../controllers/group");
+
 const router = express.Router();
+
+router.use(authorise);
 
 router.get("/", getNotes);
 
