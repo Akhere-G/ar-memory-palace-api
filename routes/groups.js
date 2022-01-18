@@ -2,19 +2,20 @@ const express = require("express");
 
 const {
   createGroup,
-  getGroups,
+  signInToGroup,
+  authorise,
   updateGroup,
   deleteGroup,
 } = require("../controllers/group");
 
 const router = express.Router();
 
-router.get("/", getGroups);
+router.post("/signin", signInToGroup);
 
-router.post("/", createGroup);
+router.post("/create", createGroup);
 
-router.patch("/:id", updateGroup);
+router.patch("/update", authorise, updateGroup);
 
-router.delete("/:id", deleteGroup);
+router.delete("/delete", authorise, deleteGroup);
 
 module.exports = router;

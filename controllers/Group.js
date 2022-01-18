@@ -1,18 +1,94 @@
 const Group = require("../models/group");
 const yup = require("yup");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const GroupSchema = new yup.ObjectSchema({
-  name: yup.string().trim().max(30).required("name is missing"),
-  category: yup.string().trim().max(30).required("category is missing"),
-  summary: yup.string().trim().max(300).required("summary is missing"),
+  name: yup.string().trim().min(4).max(30).required("name is missing"),
+  summary: yup.string().trim().min(4).max(300).required("summary is missing"),
+  password: yup.string().trim().min(4).max(30).required("password is missing"),
   latitude: yup.number().required("latitdude is missing"),
   longitude: yup.number().required("longitude is missing"),
 });
 
-module.exports.getGroups = async (req, res) => {
+const CreateGroupSchema = new yup.ObjectSchema({
+  name: yup.string().trim().min(4).max(30).required("name is missing"),
+  summary: yup.string().trim().min(4).max(300).required("summary is missing"),
+  password: yup.string().trim().min(4).max(30).required("password is missing"),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref("password")], "passwords do not match.")
+    .required("confirm password is missing"),
+  latitude: yup.number().required("latitdude is missing"),
+  longitude: yup.number().required("longitude is missing"),
+});
+
+const UpdateGroupSchema = new yup.ObjectSchema({
+  name: yup.string().trim().min(4).max(30).required("name is missing"),
+  summary: yup.string().trim().min(4).max(300).required("summary is missing"),
+  latitude: yup.number().required("latitdude is missing"),
+  longitude: yup.number().required("longitude is missing"),
+});
+
+module.exports.authorise = async (req, res, next) => {
   try {
-    const groups = await Group.find();
-    res.status(200).json({ groups, total: groups.length });
+    const bearerHeader = req.headers.authorization;
+
+    if (!bearerHeader) {
+      return res.status(400).json({ message: "Bearer Header is required" });
+    }
+
+    const bearer = bearerHeader.split(" ");
+    const bearerToken = bearer[1];
+    req.token = bearerToken;
+
+    next();
+  } catch (err) {
+    return res
+      .status(401)
+      .json({ message: "You need to log into a group to see its notes" });
+  }
+};
+
+module.exports.signInToGroup = async (req, res) => {
+  try {
+    const { name, password } = req.body;
+
+    if (!name || !password) {
+      return res
+        .status(400)
+        .json({ message: "name and password are required" });
+    }
+
+    const exisitingGroup = await Group.findOne({ name });
+
+    if (!exisitingGroup) {
+      return res.status(404).json({ message: "group doesn't exist" });
+    }
+
+    const isPasswordCorrect = await bcrypt.compare(
+      password,
+      exisitingGroup.password
+    );
+
+    if (!isPasswordCorrect) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    const token = jwt.sign(
+      {
+        name: exisitingGroup.name,
+        id: exisitingGroup._id,
+      },
+      process.env.SECRET_KEY,
+      { expiresIn: "24h" }
+    );
+
+    const group = {
+      name: exisitingGroup.name,
+      id: exisitingGroup._id,
+    };
+    res.status(200).json({ group, token });
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
@@ -20,11 +96,13 @@ module.exports.getGroups = async (req, res) => {
 
 module.exports.createGroup = async (req, res) => {
   try {
-    const { name, category, summary, latitude, longitude } = req.body;
+    const { name, summary, password, confirmPassword, latitude, longitude } =
+      req.body;
+
     const data = {
-      name: name?.trim(),
-      category: category?.trim(),
-      summary: summary?.trim(),
+      name: name?.trim()?.toLowerCase(),
+      summary: summary?.trim()?.toLowerCase(),
+      password,
       latitude,
       longitude,
     };
@@ -35,13 +113,25 @@ module.exports.createGroup = async (req, res) => {
       return res.status(400).json({ message: "This name has been taken" });
     }
 
-    await GroupSchema.validate(data);
+    await CreateGroupSchema.validate({ ...data, confirmPassword });
 
-    const newGroup = new Group(data);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    const group = await newGroup.save();
+    const group = await Group.create({
+      ...data,
+      password: hashedPassword,
+    });
 
-    res.status(201).json({ group });
+    const token = jwt.sign(
+      {
+        name: group.name,
+        id: group._id,
+      },
+      process.env.SECRET_KEY,
+      { expiresIn: "24h" }
+    );
+
+    res.status(201).json({ group, token });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -49,18 +139,21 @@ module.exports.createGroup = async (req, res) => {
 
 module.exports.updateGroup = async (req, res) => {
   try {
-    const { name, category, summary, latitude, longitude } = req.body;
+    const { name, summary, latitude, longitude } = req.body;
     const data = {
-      name: name?.trim(),
-      category: category?.trim(),
-      summary: summary?.trim(),
+      name: name?.trim()?.toLowerCase(),
+      summary: summary?.trim()?.toLowerCase(),
       latitude,
       longitude,
     };
 
-    const { id } = req.params;
+    const { token } = req;
 
-    await GroupSchema.validate(data);
+    const tokenData = jwt.verify(token, process.env.SECRET_KEY);
+
+    const id = tokenData.id;
+
+    await UpdateGroupSchema.validate(data);
 
     const exisitingGroup = await Group.findOne({ name: data.name });
 
@@ -82,7 +175,10 @@ module.exports.updateGroup = async (req, res) => {
 
 module.exports.deleteGroup = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { token } = req;
+    const tokenData = jwt.verify(token, process.env.SECRET_KEY);
+
+    const id = tokenData.id;
 
     const group = await Group.findByIdAndDelete(id);
 

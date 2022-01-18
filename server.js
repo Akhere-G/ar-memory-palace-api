@@ -20,7 +20,7 @@ const PORT = process.env.PORT || 5000;
 app.use("/api/notes", noteRoutes);
 app.use("/api/groups", groupsRoutes);
 
-app.use("/", (req, res) => res.send("Welcone to the memory palace api!"));
+app.use("/", (req, res) => res.send("Welcome to the memory palace api!"));
 
 mongoose
   .connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: true })
