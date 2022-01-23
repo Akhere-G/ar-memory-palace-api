@@ -86,6 +86,9 @@ module.exports.signInToGroup = async (req, res) => {
     const token = jwt.sign(
       {
         name: exisitingGroup.name,
+        summary: exisitingGroup.summary,
+        longitude: exisitingGroup.longitude,
+        latitude: exisitingGroup.latitude,
         id: exisitingGroup._id,
       },
       process.env.SECRET_KEY,
@@ -132,8 +135,11 @@ module.exports.createGroup = async (req, res) => {
 
     const token = jwt.sign(
       {
-        name: group.name,
-        id: group._id,
+        name: exisitingGroup.name,
+        summary: exisitingGroup.summary,
+        longitude: exisitingGroup.longitude,
+        latitude: exisitingGroup.latitude,
+        id: exisitingGroup._id,
       },
       process.env.SECRET_KEY,
       { expiresIn: "24h" }
