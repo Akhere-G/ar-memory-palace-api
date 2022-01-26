@@ -92,7 +92,7 @@ module.exports.signInToGroup = async (req, res) => {
         id: exisitingGroup._id,
       },
       process.env.SECRET_KEY,
-      { expiresIn: "24h" }
+      { expiresIn: "1y" }
     );
 
     res.status(200).json({ token });
@@ -143,7 +143,7 @@ module.exports.createGroup = async (req, res) => {
         id: newGroup._id,
       },
       process.env.SECRET_KEY,
-      { expiresIn: "24h" }
+      { expiresIn: "1y" }
     );
 
     res.status(201).json({ token });
