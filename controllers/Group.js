@@ -95,11 +95,7 @@ module.exports.signInToGroup = async (req, res) => {
       { expiresIn: "24h" }
     );
 
-    const group = {
-      name: exisitingGroup.name,
-      id: exisitingGroup._id,
-    };
-    res.status(200).json({ group, token });
+    res.status(200).json({ token });
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
@@ -107,8 +103,10 @@ module.exports.signInToGroup = async (req, res) => {
 
 module.exports.createGroup = async (req, res) => {
   try {
+    console.log("2 here");
     const { name, summary, password, confirmPassword, latitude, longitude } =
       req.body;
+    console.log("3 here", req.body);
 
     const data = {
       name: name?.trim()?.toLowerCase(),
@@ -124,7 +122,10 @@ module.exports.createGroup = async (req, res) => {
       return res.status(400).json({ message: "This name has been taken" });
     }
 
-    await CreateGroupSchema.validate({ ...data, confirmPassword });
+    const newGroup = await CreateGroupSchema.validate({
+      ...data,
+      confirmPassword,
+    });
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -135,18 +136,19 @@ module.exports.createGroup = async (req, res) => {
 
     const token = jwt.sign(
       {
-        name: exisitingGroup.name,
-        summary: exisitingGroup.summary,
-        longitude: exisitingGroup.longitude,
-        latitude: exisitingGroup.latitude,
-        id: exisitingGroup._id,
+        name: newGroup.name,
+        summary: newGroup.summary,
+        longitude: newGroup.longitude,
+        latitude: newGroup.latitude,
+        id: newGroup._id,
       },
       process.env.SECRET_KEY,
       { expiresIn: "24h" }
     );
 
-    res.status(201).json({ group, token });
+    res.status(201).json({ token });
   } catch (err) {
+    console.log(err.message);
     res.status(400).json({ message: err.message });
   }
 };
