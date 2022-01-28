@@ -4,6 +4,9 @@
   "description": "An app for creating notes in augmented reality.",
   "main": "server.js",
   "author": "Akhere Ihoeghinlan",
+  "engines": {
+    "node": "v16.13.1"
+  },
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js"
@@ -20,5 +23,6 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
-  }
+  },
+  "license": "MIT"
 }

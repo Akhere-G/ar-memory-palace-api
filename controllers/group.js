@@ -2,6 +2,7 @@ const Group = require("../models/group");
 const yup = require("yup");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const jsonwebtoken = require("jsonwebtoken");
 
 const GroupSchema = new yup.ObjectSchema({
   name: yup.string().trim().min(4).max(30).required("name is missing"),
@@ -103,10 +104,8 @@ module.exports.signInToGroup = async (req, res) => {
 
 module.exports.createGroup = async (req, res) => {
   try {
-    console.log("2 here");
     const { name, summary, password, confirmPassword, latitude, longitude } =
       req.body;
-    console.log("3 here", req.body);
 
     const data = {
       name: name?.trim()?.toLowerCase(),
@@ -136,11 +135,11 @@ module.exports.createGroup = async (req, res) => {
 
     const token = jwt.sign(
       {
-        name: newGroup.name,
-        summary: newGroup.summary,
-        longitude: newGroup.longitude,
-        latitude: newGroup.latitude,
-        id: newGroup._id,
+        name: group.name,
+        summary: group.summary,
+        longitude: group.longitude,
+        latitude: group.latitude,
+        id: group._id,
       },
       process.env.SECRET_KEY,
       { expiresIn: "1y" }
