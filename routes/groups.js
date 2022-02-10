@@ -6,9 +6,12 @@ const {
   authorise,
   updateGroup,
   deleteGroup,
+  refreshToken,
 } = require("../controllers/group");
 
 const router = express.Router();
+
+router.get("/refresh", refreshToken);
 
 router.post("/signin", signInToGroup);
 

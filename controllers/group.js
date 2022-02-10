@@ -59,6 +59,47 @@ module.exports.authorise = async (req, res, next) => {
   }
 };
 
+module.exports.refreshToken = async (req, res) => {
+  try {
+    const bearerHeader = req.headers.authorization;
+
+    if (!bearerHeader) {
+      return res.status(400).json({ message: "Bearer Header is required" });
+    }
+
+    const bearer = bearerHeader.split(" ");
+    const bearerToken = bearer[1];
+    const tokenData = jwt.verify(bearerToken, process.env.SECRET_KEY);
+    const id = tokenData.id;
+
+    Group.findById(id);
+
+    const group = await Group.findById(id);
+
+    if (!group) {
+      return res.status(404).json({ message: `No group with id ${id}` });
+    }
+
+    const groupData = {
+      name: group.name,
+      summary: group.summary,
+      longitude: group.longitude,
+      latitude: group.latitude,
+      id: group._id,
+    };
+
+    const token = jwt.sign(groupData, process.env.SECRET_KEY, {
+      expiresIn: "1y",
+    });
+
+    return res.json({ group, token });
+  } catch (err) {
+    return res
+      .status(401)
+      .json({ message: "You need to log into a group to see its notes" });
+  }
+};
+
 module.exports.signInToGroup = async (req, res) => {
   try {
     const { name, password } = req.body;
