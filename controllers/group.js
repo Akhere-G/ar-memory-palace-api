@@ -84,19 +84,19 @@ module.exports.signInToGroup = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.sign(
-      {
-        name: exisitingGroup.name,
-        summary: exisitingGroup.summary,
-        longitude: exisitingGroup.longitude,
-        latitude: exisitingGroup.latitude,
-        id: exisitingGroup._id,
-      },
-      process.env.SECRET_KEY,
-      { expiresIn: "1y" }
-    );
+    const groupData = {
+      name: exisitingGroup.name,
+      summary: exisitingGroup.summary,
+      longitude: exisitingGroup.longitude,
+      latitude: exisitingGroup.latitude,
+      id: exisitingGroup._id,
+    };
 
-    res.status(200).json({ token });
+    const token = jwt.sign(groupData, process.env.SECRET_KEY, {
+      expiresIn: "1y",
+    });
+
+    res.status(200).json({ token, group: groupData });
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
@@ -121,7 +121,7 @@ module.exports.createGroup = async (req, res) => {
       return res.status(400).json({ message: "This name has been taken" });
     }
 
-    const newGroup = await CreateGroupSchema.validate({
+    await CreateGroupSchema.validate({
       ...data,
       confirmPassword,
     });
@@ -133,19 +133,19 @@ module.exports.createGroup = async (req, res) => {
       password: hashedPassword,
     });
 
-    const token = jwt.sign(
-      {
-        name: group.name,
-        summary: group.summary,
-        longitude: group.longitude,
-        latitude: group.latitude,
-        id: group._id,
-      },
-      process.env.SECRET_KEY,
-      { expiresIn: "1y" }
-    );
+    const groupData = {
+      name: group.name,
+      summary: group.summary,
+      longitude: group.longitude,
+      latitude: group.latitude,
+      id: group._id,
+    };
 
-    res.status(201).json({ token });
+    const token = jwt.sign(groupData, process.env.SECRET_KEY, {
+      expiresIn: "1y",
+    });
+
+    res.status(201).json({ token, group: groupData });
   } catch (err) {
     console.log(err.message);
     res.status(400).json({ message: err.message });
