@@ -92,7 +92,7 @@ module.exports.refreshToken = async (req, res) => {
       expiresIn: "1y",
     });
 
-    return res.json({ group, token });
+    return res.json({ group: groupData, token });
   } catch (err) {
     return res
       .status(401)
