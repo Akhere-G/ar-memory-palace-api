@@ -1,5 +1,4 @@
 const Note = require("../models/note");
-const Group = require("../models/group");
 const yup = require("yup");
 
 const NoteSchema = new yup.ObjectSchema({
