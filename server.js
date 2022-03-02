@@ -1,28 +1,15 @@
-const express = require("express");
+const app = require("./app");
 const mongoose = require("mongoose");
-const dotenv = require("dotenv");
-const cors = require("cors");
 
-const noteRoutes = require("./routes/notes");
-const groupsRoutes = require("./routes/groups");
+const dotenv = require("dotenv");
 
 dotenv.config();
-
-const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cors());
 
 const CONNECTION_URL = process.env.CONNECTION_URL;
 
 const PORT = process.env.PORT || 5000;
 
-app.use("/api/notes", noteRoutes);
-app.use("/api/groups", groupsRoutes);
-
-app.use("/", (req, res) => res.send("Welcome to the memory palace api!"));
-
 mongoose
   .connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => app.listen(PORT, () => console.log(`Listening at port ${PORT}`)))
-  .catch((err) => console.log(`Could not connect. ${err.message}`));
+  .then(() => app.listen(PORT, () => 
+  .catch((err) => 
