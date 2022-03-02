@@ -9,9 +9,9 @@ const CreateGroupSchema = new yup.ObjectSchema({
   password: yup.string().trim().min(4).max(30).required("password is missing"),
   confirmPassword: yup
     .string()
-    .oneOf([yup.ref("password")], "passwords do not match.")
+    .oneOf([yup.ref("password")], "passwords do not match")
     .required("confirm password is missing"),
-  latitude: yup.number().required("latitdude is missing"),
+  latitude: yup.number().required("latitude is missing"),
   longitude: yup.number().required("longitude is missing"),
 });
 
