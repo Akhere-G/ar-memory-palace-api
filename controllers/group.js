@@ -2,15 +2,6 @@ const Group = require("../models/group");
 const yup = require("yup");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const jsonwebtoken = require("jsonwebtoken");
-
-const GroupSchema = new yup.ObjectSchema({
-  name: yup.string().trim().min(4).max(30).required("name is missing"),
-  summary: yup.string().trim().min(4).max(300).required("summary is missing"),
-  password: yup.string().trim().min(4).max(30).required("password is missing"),
-  latitude: yup.number().required("latitdude is missing"),
-  longitude: yup.number().required("longitude is missing"),
-});
 
 const CreateGroupSchema = new yup.ObjectSchema({
   name: yup.string().trim().min(4).max(30).required("name is missing"),
@@ -188,7 +179,6 @@ module.exports.createGroup = async (req, res) => {
 
     res.status(201).json({ token, group: groupData });
   } catch (err) {
-    console.log(err.message);
     res.status(400).json({ message: err.message });
   }
 };
