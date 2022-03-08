@@ -89,5 +89,36 @@ describe("api/groups", () => {
         message: "Invalid credentials",
       });
     });
+
+    it("sends a token after a succesfful response", async () => {
+      const groupData = {
+        name: "name",
+        password: "password",
+      };
+
+      Group.findOne = jest.fn(() => ({
+        name: "name",
+        summary: "summary",
+        _id: "id",
+        password: "hash_of_password",
+      }));
+
+      bcrypt.compare = jest.fn(() => true);
+
+      const response = await request(app)
+        .post("/api/groups/signin")
+        .send(groupData)
+        .expect("Content-Type", /json/);
+
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toStrictEqual({
+        group: {
+          id: "id",
+          name: "name",
+          summary: "summary",
+        },
+        token: "token",
+      });
+    });
   });
 });
