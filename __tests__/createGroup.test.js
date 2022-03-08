@@ -1,6 +1,6 @@
 const request = require("supertest");
-const app = require("./app");
-const Group = require("./models/group");
+const app = require("../app");
+const Group = require("../models/group");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -341,7 +341,7 @@ describe("api/groups", () => {
       });
     });
 
-    it("sends error message when longitude is misisng", async () => {
+    it("sends error message when latitude is misisng", async () => {
       const formData = {
         name: "name",
         summary: "summary",
