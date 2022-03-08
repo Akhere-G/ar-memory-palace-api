@@ -95,7 +95,7 @@ module.exports.signInToGroup = async (req, res) => {
         .json({ message: "name and password are required" });
     }
 
-    const exisitingGroup = await Group.findOne({ name });
+    const exisitingGroup = await Group.findOne({ name: name.toLowerCase() });
 
     if (!exisitingGroup) {
       return res.status(404).json({ message: "group doesn't exist" });
@@ -132,7 +132,7 @@ module.exports.createGroup = async (req, res) => {
 
     const data = {
       name: name?.trim()?.toLowerCase(),
-      summary: summary?.trim()?.toLowerCase(),
+      summary: summary?.trim(),
       password,
     };
 
@@ -175,7 +175,7 @@ module.exports.updateGroup = async (req, res) => {
     const { name, summary } = req.body;
     const data = {
       name: name?.trim()?.toLowerCase(),
-      summary: summary?.trim()?.toLowerCase(),
+      summary: summary?.trim(),
     };
 
     const id = req.groupId;
