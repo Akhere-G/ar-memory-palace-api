@@ -11,11 +11,11 @@ const {
 
 const router = express.Router();
 
-router.get("/refresh", refreshToken);
-
 router.post("/signin", signInToGroup);
 
 router.post("/create", createGroup);
+
+router.get("/refresh", authorise, refreshToken);
 
 router.patch("/update", authorise, updateGroup);
 
