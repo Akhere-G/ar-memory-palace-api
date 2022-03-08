@@ -4,8 +4,6 @@ const GroupSchema = mongoose.Schema({
   name: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   summary: { type: String, required: true },
-  latitude: { type: Number, required: true },
-  longitude: { type: Number, required: true },
 });
 
 const Group = mongoose.models.Group || mongoose.model("Group", GroupSchema);

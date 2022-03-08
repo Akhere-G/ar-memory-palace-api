@@ -11,15 +11,11 @@ const CreateGroupSchema = new yup.ObjectSchema({
     .string()
     .oneOf([yup.ref("password")], "passwords do not match")
     .required("confirm password is missing"),
-  latitude: yup.number().required("latitude is missing"),
-  longitude: yup.number().required("longitude is missing"),
 });
 
 const UpdateGroupSchema = new yup.ObjectSchema({
   name: yup.string().trim().min(4).max(30).required("name is missing"),
   summary: yup.string().trim().min(4).max(300).required("summary is missing"),
-  latitude: yup.number().required("latitdude is missing"),
-  longitude: yup.number().required("longitude is missing"),
 });
 
 module.exports.authorise = async (req, res, next) => {
@@ -74,8 +70,6 @@ module.exports.refreshToken = async (req, res) => {
     const groupData = {
       name: group.name,
       summary: group.summary,
-      longitude: group.longitude,
-      latitude: group.latitude,
       id: group._id,
     };
 
@@ -119,8 +113,6 @@ module.exports.signInToGroup = async (req, res) => {
     const groupData = {
       name: exisitingGroup.name,
       summary: exisitingGroup.summary,
-      longitude: exisitingGroup.longitude,
-      latitude: exisitingGroup.latitude,
       id: exisitingGroup._id,
     };
 
@@ -136,15 +128,12 @@ module.exports.signInToGroup = async (req, res) => {
 
 module.exports.createGroup = async (req, res) => {
   try {
-    const { name, summary, password, confirmPassword, latitude, longitude } =
-      req.body;
+    const { name, summary, password, confirmPassword } = req.body;
 
     const data = {
       name: name?.trim()?.toLowerCase(),
       summary: summary?.trim()?.toLowerCase(),
       password,
-      latitude,
-      longitude,
     };
 
     const exisitingGroup = await Group.findOne({ name: data.name });
@@ -168,8 +157,6 @@ module.exports.createGroup = async (req, res) => {
     const groupData = {
       name: group.name,
       summary: group.summary,
-      longitude: group.longitude,
-      latitude: group.latitude,
       id: group._id,
     };
 
@@ -185,12 +172,10 @@ module.exports.createGroup = async (req, res) => {
 
 module.exports.updateGroup = async (req, res) => {
   try {
-    const { name, summary, latitude, longitude } = req.body;
+    const { name, summary } = req.body;
     const data = {
       name: name?.trim()?.toLowerCase(),
       summary: summary?.trim()?.toLowerCase(),
-      latitude,
-      longitude,
     };
 
     const id = req.groupId;

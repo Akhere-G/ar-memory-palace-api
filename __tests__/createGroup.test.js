@@ -19,8 +19,6 @@ describe("api/groups", () => {
         summary: "summary",
         password: "password",
         confirmPassword: "password",
-        latitude: "10",
-        longitude: "20",
       };
 
       Group.findOne = jest.fn(() => groupData);
@@ -40,8 +38,6 @@ describe("api/groups", () => {
       const expectedGroupData = {
         name: "name",
         summary: "summary",
-        latitude: "10",
-        longitude: "20",
       };
       const formData = {
         ...expectedGroupData,
@@ -70,8 +66,6 @@ describe("api/groups", () => {
     it("sends error message when name is missing ", async () => {
       const formData = {
         summary: "summary",
-        latitude: "10",
-        longitude: "20",
         password: "password",
         confirmPassword: "password",
       };
@@ -94,9 +88,7 @@ describe("api/groups", () => {
       const formData = {
         name: "s",
         summary: "summary",
-        latitude: "10",
         password: "password",
-        longitude: "20",
         confirmPassword: "password",
       };
 
@@ -118,9 +110,7 @@ describe("api/groups", () => {
       const formData = {
         name: "1234567890123456789012345678901",
         summary: "summary",
-        latitude: "10",
         password: "password",
-        longitude: "20",
         confirmPassword: "password",
       };
 
@@ -142,8 +132,6 @@ describe("api/groups", () => {
     it("sends error message when summary is missing ", async () => {
       const formData = {
         name: "name",
-        latitude: "10",
-        longitude: "20",
         password: "password",
         confirmPassword: "password",
       };
@@ -166,9 +154,7 @@ describe("api/groups", () => {
       const formData = {
         name: "name",
         summary: "s",
-        latitude: "10",
         password: "password",
-        longitude: "20",
         confirmPassword: "password",
       };
 
@@ -222,9 +208,7 @@ describe("api/groups", () => {
                   123456789012345678901234567890
                   123456789012345678901234567890
                   `,
-        latitude: "10",
         password: "password",
-        longitude: "20",
         confirmPassword: "password",
       };
 
@@ -248,8 +232,6 @@ describe("api/groups", () => {
       const formData = {
         name: "name",
         summary: "summary",
-        latitude: "10",
-        longitude: "20",
         password: "qwertyuiop",
         confirmPassword: "password",
       };
@@ -272,9 +254,7 @@ describe("api/groups", () => {
       const formData = {
         name: "name",
         summary: "summary",
-        latitude: "10",
         password: "p",
-        longitude: "20",
         confirmPassword: "p",
       };
 
@@ -296,8 +276,6 @@ describe("api/groups", () => {
       const formData = {
         name: "name",
         summary: "summary",
-        latitude: "10",
-        longitude: "20",
         password: "1234567890123456789012345678901",
         confirmPassword: "1234567890123456789012345678901",
       };
@@ -313,54 +291,6 @@ describe("api/groups", () => {
       expect(response.statusCode).toBe(400);
       expect(response.body).toStrictEqual({
         message: "password must be at most 30 characters",
-      });
-    });
-
-    // longitude and latitude
-
-    it("sends error message when longitude is misisng", async () => {
-      const formData = {
-        name: "name",
-        summary: "summary",
-        latitude: "10",
-        password: "123456",
-        confirmPassword: "123456",
-      };
-
-      Group.findOne = jest.fn(() => null);
-      Group.create = jest.fn((data) => data);
-
-      const response = await request(app)
-        .post("/api/groups/create")
-        .send(formData)
-        .expect("Content-Type", /json/);
-
-      expect(response.statusCode).toBe(400);
-      expect(response.body).toStrictEqual({
-        message: "longitude is missing",
-      });
-    });
-
-    it("sends error message when latitude is misisng", async () => {
-      const formData = {
-        name: "name",
-        summary: "summary",
-        longitude: "10",
-        password: "123456",
-        confirmPassword: "123456",
-      };
-
-      Group.findOne = jest.fn(() => null);
-      Group.create = jest.fn((data) => data);
-
-      const response = await request(app)
-        .post("/api/groups/create")
-        .send(formData)
-        .expect("Content-Type", /json/);
-
-      expect(response.statusCode).toBe(400);
-      expect(response.body).toStrictEqual({
-        message: "latitude is missing",
       });
     });
   });
