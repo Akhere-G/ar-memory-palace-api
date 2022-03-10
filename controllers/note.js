@@ -16,7 +16,7 @@ module.exports.getNotes = async (req, res) => {
 
     res.status(200).json({ notes, total: notes.length });
   } catch (err) {
-    res.status(404).json({ message: err.message });
+    res.status(404).json({ message: "Could not get notes" });
   }
 };
 
