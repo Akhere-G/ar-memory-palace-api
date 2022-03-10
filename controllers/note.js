@@ -3,9 +3,9 @@ const yup = require("yup");
 
 const NoteSchema = new yup.ObjectSchema({
   title: yup.string().trim().max(30).required("title is missing"),
-  groupId: yup.string().trim().max(30).required("group id is missing"),
+  groupId: yup.string().required("group id is missing"),
   text: yup.string().trim().max(250).required("text is missing"),
-  latitude: yup.number().required("latitdude is missing"),
+  latitude: yup.number().required("latitude is missing"),
   longitude: yup.number().required("longitude is missing"),
 });
 
