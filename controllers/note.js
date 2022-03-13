@@ -36,7 +36,7 @@ module.exports.createNote = async (req, res) => {
 
     await NoteSchema.validate(data);
 
-    const note = Note.create(data);
+    const note = await Note.create(data);
 
     res.status(201).json({ note });
   } catch (err) {
