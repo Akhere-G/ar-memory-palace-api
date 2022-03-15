@@ -70,7 +70,16 @@ module.exports.updateNote = async (req, res) => {
       return res.status(404).json({ message: `No note with id ${id}` });
     }
 
-    res.status(201).json({ note: { ...data, _id: id } });
+    res.status(201).json({
+      note: {
+        groupId: note.groupId,
+        id: note._id,
+        title: data.title,
+        text: data.text,
+        latitude: data.latitude,
+        longitude: data.longitude,
+      },
+    });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
