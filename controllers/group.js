@@ -67,7 +67,8 @@ module.exports.refreshToken = async (req, res) => {
 
 module.exports.signInToGroup = async (req, res) => {
   try {
-    const { name, password } = req.body;
+    const name = req.body.name?.toLowerCase()?.trim();
+    const password = req.body.name;
 
     if (!name || !password) {
       return res
@@ -75,7 +76,7 @@ module.exports.signInToGroup = async (req, res) => {
         .json({ message: "name and password are required" });
     }
 
-    const exisitingGroup = await Group.findOne({ name: name.toLowerCase() });
+    const exisitingGroup = await Group.findOne({ name });
 
     if (!exisitingGroup) {
       return res.status(404).json({ message: "group doesn't exist" });
