@@ -31,7 +31,7 @@ describe("api/groups", () => {
       });
     });
 
-    it("sends an error message thatpassword is missing", async () => {
+    it("sends an error message that password is missing", async () => {
       const groupData = {
         name: "name",
       };

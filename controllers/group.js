@@ -68,7 +68,7 @@ module.exports.refreshToken = async (req, res) => {
 module.exports.signInToGroup = async (req, res) => {
   try {
     const name = req.body.name?.toLowerCase()?.trim();
-    const password = req.body.name;
+    const password = req.body.password;
 
     if (!name || !password) {
       return res
