@@ -36,7 +36,26 @@ describe("api/notes", () => {
         _id: "a id",
       }));
 
-      const notes = [
+      const notesFromDatabase = [
+        {
+          title: "title 1",
+          _id: "id 1",
+          groupId: "a id",
+          text: "text 1",
+          latitude: 10,
+          longitude: 10,
+        },
+        {
+          title: "title 2",
+          _id: "id 2",
+          groupId: "a id",
+          text: "text 2",
+          latitude: 20,
+          longitude: 20,
+        },
+      ];
+
+      const ExpectedNotes = [
         {
           title: "title 1",
           id: "id 1",
@@ -54,14 +73,14 @@ describe("api/notes", () => {
           longitude: 20,
         },
       ];
-      Note.find = jest.fn(() => notes);
+      Note.find = jest.fn(() => notesFromDatabase);
       const response = await request(app)
         .get("/api/notes")
         .set({ Authorization: token })
         .expect("Content-Type", /json/);
 
       expect(response.statusCode).toBe(200);
-      expect(response.body).toStrictEqual({ notes, total: 2 });
+      expect(response.body).toStrictEqual({ notes: ExpectedNotes, total: 2 });
     });
   });
 });

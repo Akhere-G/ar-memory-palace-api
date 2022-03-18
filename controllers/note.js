@@ -14,7 +14,16 @@ module.exports.getNotes = async (req, res) => {
   try {
     const notes = await Note.find({ groupId });
 
-    res.status(200).json({ notes, total: notes.length });
+    const formattedNotes = notes.map((note) => ({
+      groupId: note.groupId,
+      id: note._id,
+      title: note.title,
+      text: note.text,
+      latitude: note.latitude,
+      longitude: note.longitude,
+    }));
+
+    res.status(200).json({ notes: formattedNotes, total: notes.length });
   } catch (err) {
     res.status(404).json({ message: "Could not get notes" });
   }
