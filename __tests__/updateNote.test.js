@@ -8,7 +8,7 @@ jest.mock("bcrypt");
 jest.mock("jsonwebtoken");
 
 describe("api/notes", () => {
-  describe("create api/notes/", () => {
+  describe("update api/notes/", () => {
     beforeAll(() => {
       jwt.verify = jest.fn(() => ({ id: "a id" }));
       Group.findById = jest.fn(() => ({
@@ -22,15 +22,13 @@ describe("api/notes", () => {
     it("sends an error message when the title is missing", async () => {
       const token = "Bearer token";
       const note = {
-        groupId: "a id",
         text: "text 1",
         latitude: 10,
         longitude: 10,
       };
 
-      Note.find = jest.fn(() => []);
       const response = await request(app)
-        .post("/api/notes")
+        .patch("/api/notes/123")
         .set({ Authorization: token })
         .send(note)
         .expect("Content-Type", /json/);
@@ -43,15 +41,13 @@ describe("api/notes", () => {
       const token = "Bearer token";
       const note = {
         title: "1234567890123456789012345678901",
-        groupId: "a id",
         text: "text 1",
         latitude: 10,
         longitude: 10,
       };
 
-      Note.find = jest.fn(() => []);
       const response = await request(app)
-        .post("/api/notes")
+        .patch("/api/notes/123")
         .set({ Authorization: token })
         .send(note)
         .expect("Content-Type", /json/);
@@ -66,14 +62,12 @@ describe("api/notes", () => {
       const token = "Bearer token";
       const note = {
         title: "a title",
-        groupId: "a id",
         latitude: 10,
         longitude: 10,
       };
 
-      Note.find = jest.fn(() => []);
       const response = await request(app)
-        .post("/api/notes")
+        .patch("/api/notes/123")
         .set({ Authorization: token })
         .send(note)
         .expect("Content-Type", /json/);
@@ -94,14 +88,12 @@ describe("api/notes", () => {
                12345678901234567890123456789012345678901234567890
                12345678901234567890123456789012345678901234567890
                12345678901234567890123456789012345678901234567890`,
-        groupId: "a id",
         latitude: 10,
         longitude: 10,
       };
 
-      Note.find = jest.fn(() => []);
       const response = await request(app)
-        .post("/api/notes")
+        .patch("/api/notes/123")
         .set({ Authorization: token })
         .send(note)
         .expect("Content-Type", /json/);
@@ -117,13 +109,11 @@ describe("api/notes", () => {
       const note = {
         title: "a title",
         text: "a text",
-        groupId: "a id",
         longitude: 10,
       };
 
-      Note.find = jest.fn(() => []);
       const response = await request(app)
-        .post("/api/notes")
+        .patch("/api/notes/123")
         .set({ Authorization: token })
         .send(note)
         .expect("Content-Type", /json/);
@@ -139,13 +129,11 @@ describe("api/notes", () => {
       const note = {
         title: "a title",
         text: "a text",
-        groupId: "a id",
         latitude: 10,
       };
 
-      Note.find = jest.fn(() => []);
       const response = await request(app)
-        .post("/api/notes")
+        .patch("/api/notes/123")
         .set({ Authorization: token })
         .send(note)
         .expect("Content-Type", /json/);
@@ -161,21 +149,17 @@ describe("api/notes", () => {
       const note = {
         title: "a title",
         text: "a text",
-        groupId: "a id",
         latitude: 10,
         longitude: 10,
       };
 
-      Note.create = jest.fn(() => ({
-        title: "a title",
-        text: "a text",
+      Note.findByIdAndUpdate = jest.fn((data) => ({
+        ...data,
         groupId: "a id",
         _id: "123",
-        latitude: 10,
-        longitude: 10,
       }));
       const response = await request(app)
-        .post("/api/notes")
+        .patch("/api/notes/123")
         .set({ Authorization: token })
         .send(note)
         .expect("Content-Type", /json/);
@@ -184,7 +168,7 @@ describe("api/notes", () => {
       expect(response.body).toStrictEqual({
         note: {
           groupId: "a id",
-          _id: "123",
+          id: "123",
           latitude: 10,
           longitude: 10,
           text: "a text",
@@ -194,3 +178,13 @@ describe("api/notes", () => {
     });
   });
 });
+/*
+
+
+
+    
+    
+    
+  });
+});
+*/
