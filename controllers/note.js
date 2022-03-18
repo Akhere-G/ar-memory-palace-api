@@ -38,7 +38,16 @@ module.exports.createNote = async (req, res) => {
 
     const note = await Note.create(data);
 
-    res.status(201).json({ note });
+    res.status(201).json({
+      note: {
+        groupId: note.groupId,
+        id: note._id,
+        title: data.title,
+        text: data.text,
+        latitude: data.latitude,
+        longitude: data.longitude,
+      },
+    });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -94,7 +103,16 @@ module.exports.deleteNote = async (req, res) => {
     if (!note) {
       return res.status(404).json({ message: `No note with id ${id}` });
     }
-    res.status(200).json({ note });
+    res.status(200).json({
+      note: {
+        groupId: note.groupId,
+        id: note._id,
+        title: note.title,
+        text: note.text,
+        latitude: note.latitude,
+        longitude: note.longitude,
+      },
+    });
   } catch (err) {
     res.status(400).json(err);
   }

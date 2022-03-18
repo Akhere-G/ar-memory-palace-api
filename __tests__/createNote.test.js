@@ -184,7 +184,7 @@ describe("api/notes", () => {
       expect(response.body).toStrictEqual({
         note: {
           groupId: "a id",
-          _id: "123",
+          id: "123",
           latitude: 10,
           longitude: 10,
           text: "a text",

@@ -175,7 +175,7 @@ module.exports.updateGroup = async (req, res) => {
       return res.status(404).json({ message: `No group with id ${id}` });
     }
 
-    res.status(201).json({ group: { ...data, _id: id } });
+    res.status(201).json({ group: { ...data, id } });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -191,7 +191,7 @@ module.exports.deleteGroup = async (req, res) => {
       return res.status(404).json({ message: `No group with id ${id}` });
     }
 
-    res.status(201).json({ message: "success" });
+    res.status(201).json({ group: req.group });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }

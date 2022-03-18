@@ -39,7 +39,7 @@ describe("api/notes", () => {
       const notes = [
         {
           title: "title 1",
-          groupId: "id 1",
+          id: "id 1",
           groupId: "a id",
           text: "text 1",
           latitude: 10,
@@ -47,7 +47,7 @@ describe("api/notes", () => {
         },
         {
           title: "title 2",
-          groupId: "id 2",
+          id: "id 2",
           groupId: "a id",
           text: "text 2",
           latitude: 20,
