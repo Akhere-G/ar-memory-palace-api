@@ -110,7 +110,7 @@ module.exports.deleteNote = async (req, res) => {
     const note = await Note.findByIdAndDelete(id);
 
     if (!note) {
-      return res.status(404).json({ message: `No note with id ${id}` });
+      return res.status(404).json({ message: "This note doesn't exist" });
     }
     res.status(200).json({
       note: {
